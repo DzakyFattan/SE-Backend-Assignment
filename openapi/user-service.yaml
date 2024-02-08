@@ -4,7 +4,7 @@ info:
   description: API documentation for the user service
   version: 1.0.0
 servers:
-  - url: http://localhost:3000
+  - url: http://localhost:2431
 paths:
   /register:
     post:
@@ -18,13 +18,21 @@ paths:
               properties:
                 username:
                   type: string
+                email:
+                  type: string
                 password:
+                  type: string
+                phone_number:
+                  type: string
+                address:
                   type: string
       responses:
         "201":
           description: User registered successfully
         "400":
-          description: Invalid request body
+          description: Username, email and password are required
+        "409":
+          description: User already exists
         "500":
           description: Internal server error
   /login:
@@ -52,9 +60,11 @@ paths:
                   token:
                     type: string
         "400":
-          description: Invalid request body
+          description: Username and password are required
         "401":
-          description: Invalid username or password
+          description: Invalid credentials
+        "404":
+          description: User not found
         "500":
           description: Internal server error
   /profile:

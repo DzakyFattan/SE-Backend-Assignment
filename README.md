@@ -1,6 +1,6 @@
 # SE-Backend-Assignment
 
-SE Backend Assignment for Elevarm Backend Engineer Application
+SE Backend Assignment for Backend Engineer Application
 
 ## About the Project
 
@@ -44,11 +44,11 @@ This project is a simple REST API, built with modular monolith architecture, tha
    npm run dev
    ```
 
-5. The project will be running on `http://localhost:3000`
+5. The project will be running on `http://localhost:2431`
 
 ## Usage
 
-OpenAPI documentation can be accessed at `http://localhost:3000/api-docs`
+OpenAPI documentation can be accessed at `http://localhost:2431/api-docs`
 
 ## Contact
 
