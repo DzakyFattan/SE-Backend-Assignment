@@ -83,7 +83,55 @@ paths:
                   message:
                     type: string
         "401":
-          description: Unauthorized - token is missing or invalid
+          description: Unauthorized
+        "403":
+          description: forbidden
+        "500":
+          description: Internal server error
+  /update:
+    post:
+      summary: Update user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                phone_number:
+                  type: string
+                address:
+                  type: string
+      responses:
+        "200":
+          description: User updated successfully
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error
+  /delete:
+    post:
+      summary: delete a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        "200":
+          description: User deleted successfully
+        "404":
+          description: User not found
         "500":
           description: Internal server error
 components:

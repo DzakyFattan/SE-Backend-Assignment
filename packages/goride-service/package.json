@@ -1,14 +1,14 @@
 {
-  "name": "user-service",
+  "name": "goride-service",
   "version": "1.0.0",
-  "description": "User service for SE Backend Assignment",
+  "description": "GoRide-like service for SE Backend Assignment",
   "main": "src/index.js",
   "scripts": {
-    "dev": "nodemon --watch src index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "User",
+    "GoRide",
     "Elevarm",
     "Assignment"
   ],

@@ -1,19 +1,29 @@
 const { Router } = require("express");
 
-const { registerUser, loginUser } = require("./controller");
-const authenticateUser = require("./auth");
-const sanitizeUserInput = require("./sanitize");
+const {
+  registerUser,
+  loginUser,
+  updateUser,
+  deleteUser,
+} = require("./controller");
+const { authenticateUser, authorizeUser } = require("./auth");
 
 const router = Router();
 
 // Register route
-router.post("/register", registerUser(req, res));
+router.post("/register", registerUser);
 
 // Login route
-router.post("/login", authenticateUser, loginUser(req, res));
+router.post("/login", authenticateUser, loginUser);
+
+// Update route
+router.put("/update", updateUser);
+
+// Delete route
+router.delete("/delete", deleteUser);
 
 // Example protected route
-router.get("/profile", authenticateUser, (req, res) => {
+router.get("/profile", authorizeUser, (req, res) => {
   // Authenticated user can access this route
   res.json({ message: `Welcome ${req.user.username}!` });
 });

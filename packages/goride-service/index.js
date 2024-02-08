@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Middleware for serving OpenAPI documentation
-const openapiDocument = YAML.load("../../openapi/user-service.yaml");
+const openapiDocument = YAML.load("../../openapi/goride-service.yaml");
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openapiDocument));
 
 app.get("/", (req, res) => {
