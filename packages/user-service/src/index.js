@@ -5,8 +5,8 @@ const jwt = require("jsonwebtoken");
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs"); // You'll need to install yamljs: npm install yamljs
 
-const sanitizeUserInput = require("./middleware/sanitize");
-const authenticateUser = require("./middleware/auth");
+const sanitizeUserInput = require("./sanitize");
+const authenticateUser = require("./auth");
 
 const app = express();
 const PORT = 2431;
@@ -16,6 +16,10 @@ const users = [];
 
 // Middleware for JSON body parsing
 app.use(bodyParser.json());
+
+// Middleware for serving OpenAPI documentation
+const openapiDocument = YAML.load("../../../openapi/user-service.yaml");
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openapiDocument));
 
 // Register route
 app.post("/register", sanitizeUserInput, (req, res) => {
