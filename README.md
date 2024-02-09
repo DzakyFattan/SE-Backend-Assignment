@@ -70,7 +70,7 @@ Other than mentioned above, Gojek App also have various services such as GoSend,
 
 ### Data Model
 
-[data-model](./static/data-model.png)
+![data-model](./static/data-model.png)
 
 ## Getting Started
 
