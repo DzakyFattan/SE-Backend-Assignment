@@ -81,7 +81,13 @@ Other than mentioned above, Gojek App also have various services such as GoSend,
 
 ### Installation
 
+#### Services
+
 Refer to each service's README for installation instructions.
+
+#### Database
+
+Use the dumped .sql [here](./sql/be_service_dump.sql) 
 
 ## Usage
 
