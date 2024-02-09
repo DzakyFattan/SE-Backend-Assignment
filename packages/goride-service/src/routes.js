@@ -1,7 +1,7 @@
 const { Router } = require("express");
 
 const { getTrip, requestTrip } = require("./controller");
-const { authorizeUser } = require("./auth");
+const authorizeUser = require("./auth");
 
 const router = Router();
 

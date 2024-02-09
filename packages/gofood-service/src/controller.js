@@ -2,16 +2,16 @@ const pool = require("./db");
 
 const getOrder = async (req, res) => {
   try {
-    const trip_id = req.params.trip_id;
-    const trip = await pool.query("SELECT * FROM orders WHERE trip_id = $1", [
-      trip_id,
+    const order_id = req.params.order_id;
+    const order = await pool.query("SELECT * FROM orders WHERE order_id = $1", [
+      order_id,
     ]);
-    if (!trip.rows.length) {
-      return res.status(404).json({ message: "Trip not found" });
+    if (!order.rows.length) {
+      return res.status(404).json({ message: "Order not found" });
     }
     res
       .status(200)
-      .json({ message: "Trip detail retrieved", trip: trip.rows[0] });
+      .json({ message: "Order detail retrieved", order: order.rows[0] });
   } catch (err) {
     res.status(500).json({ message: "Internal Server Error" });
   }
@@ -19,90 +19,92 @@ const getOrder = async (req, res) => {
 
 const requestFood = async (req, res) => {
   try {
-    const { driver_id, start_location, end_location, fare } = req.body;
+    const { food_id, quantity } = req.body;
     // get the user_id from the token
     const user_id = req.user.user_id;
 
-    // check if the driver is available
-    const driver = await pool.query(
-      "SELECT * FROM drivers WHERE driver_id = $1",
-      [driver_id]
-    );
-    if (!driver.rows.length) {
-      return res.status(404).json({ message: "Driver not found" });
+    // check if the food exists
+    const food = await pool.query("SELECT * FROM foods WHERE food_id = $1", [
+      food_id,
+    ]);
+    if (!food.rows.length) {
+      return res.status(404).json({ message: "Food not found" });
     }
 
-    // check if there is accept in query param
-    if (req.query.accept) {
-      const trip_id = req.query.accept;
-      // check if the trip exists
-      const trip = await pool.query("SELECT * FROM trips WHERE trip_id = $1", [
-        trip_id,
-      ]);
-      if (!trip.rows.length) {
-        return res.status(404).json({ message: "Trip not found" });
+    // check if there is process in query param
+    if (req.query.process) {
+      const order_id = req.query.process;
+      // check if the order exists
+      const order = await pool.query(
+        "SELECT * FROM orders WHERE order_id = $1",
+        [order_id]
+      );
+      if (!order.rows.length) {
+        return res.status(404).json({ message: "Order not found" });
       }
-      // check if the trip is already accepted
-      if (trip.rows[0].current_status === "accepted") {
-        return res.status(400).json({ message: "Trip already accepted" });
+      // check if the order is already processed
+      if (order.rows[0].current_status === "processing") {
+        return res.status(400).json({ message: "Order already in processing" });
       }
-      const acceptRide = await pool.query(
-        "UPDATE trips SET current_status = 'accepted' WHERE trip_id = $1 RETURNING *",
-        [trip_id]
+      const processOrder = await pool.query(
+        "UPDATE orders SET current_status = 'processing' WHERE order_id = $1 RETURNING *",
+        [order_id]
       );
 
       return res.status(200).json({
-        message: "Ride accepted",
-        ride: acceptRide.rows[0],
+        message: "Order is being processed",
+        ride: processOrder.rows[0],
       });
     } else if (req.query.cancel) {
-      const trip_id = req.query.cancel;
-      // check if the trip exists
-      const trip = await pool.query("SELECT * FROM trips WHERE trip_id = $1", [
-        trip_id,
-      ]);
-      if (!trip.rows.length) {
-        return res.status(404).json({ message: "Trip not found" });
+      const order_id = req.query.cancel;
+      // check if the order exists
+      const order = await pool.query(
+        "SELECT * FROM orders WHERE order_id = $1",
+        [order_id]
+      );
+      if (!order.rows.length) {
+        return res.status(404).json({ message: "Order not found" });
       }
-      // check if the trip is already cancelled
-      if (trip.rows[0].current_status === "cancelled") {
-        return res.status(400).json({ message: "Trip already cancelled" });
+      // check if the order is already cancelled
+      if (order.rows[0].current_status === "cancelled") {
+        return res.status(400).json({ message: "Order already cancelled" });
       }
-      const cancelRide = await pool.query(
-        "UPDATE trips SET current_status = 'cancelled' WHERE trip_id = $1 RETURNING *",
-        [trip_id]
+      const cancelOrder = await pool.query(
+        "UPDATE orders SET current_status = 'cancelled' WHERE order_id = $1 RETURNING *",
+        [order_id]
       );
 
       return res.status(200).json({
-        message: "Ride cancelled",
-        ride: cancelRide.rows[0],
+        message: "Order cancelled",
+        ride: cancelOrder.rows[0],
       });
     } else if (req.query.complete) {
-      const trip_id = req.query.complete;
-      // check if the trip exists
-      const trip = await pool.query("SELECT * FROM trips WHERE trip_id = $1", [
-        trip_id,
-      ]);
-      if (!trip.rows.length) {
-        return res.status(404).json({ message: "Trip not found" });
+      const order_id = req.query.complete;
+      // check if the order exists
+      const order = await pool.query(
+        "SELECT * FROM orders WHERE order_id = $1",
+        [order_id]
+      );
+      if (!order.rows.length) {
+        return res.status(404).json({ message: "Order not found" });
       }
-      // check if the trip is already completed
-      if (trip.rows[0].current_status === "completed") {
-        return res.status(400).json({ message: "Trip already completed" });
+      // check if the order is already completed
+      if (order.rows[0].current_status === "completed") {
+        return res.status(400).json({ message: "Order already completed" });
       }
-      const completeRide = await pool.query(
-        "UPDATE trips SET current_status = 'completed' WHERE trip_id = $1 RETURNING *",
-        [trip_id]
+      const completeOrder = await pool.query(
+        "UPDATE orders SET current_status = 'completed' WHERE order_id = $1 RETURNING *",
+        [order_id]
       );
 
       return res.status(200).json({
-        message: "Ride completed",
+        message: "Order completed",
         ride: completeRide.rows[0],
       });
     }
     const newRide = await pool.query(
-      "INSERT INTO trips (user_id, driver_id, start_location, end_location, fare) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [driver_id, user_id, start_location, end_location, fare]
+      "INSERT INTO orders (user_id, food_id, quantity, VALUES ($1, $2, $3) RETURNING *",
+      [user_id, food_id, quantity]
     );
 
     res.status(201).json({ message: "Ride requested", ride: newRide.rows[0] });
