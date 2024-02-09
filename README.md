@@ -87,7 +87,7 @@ Refer to each service's README for installation instructions.
 
 #### Database
 
-Use the dumped .sql [here](./sql/be_service_dump.sql) 
+Use the dumped .sql [here.](./sql/be_service_dump.sql) Create postgres user `be_service` with pass `12345678` and createdb permission to use.
 
 ## Usage
 
